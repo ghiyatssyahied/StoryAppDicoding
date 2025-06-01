@@ -1,0 +1,5 @@
+APP_URL=http://localhost:5173
+MAP_SERVICE_API_KEY=NO_KEY_NEEDED
+
+Catatan:
+- Aplikasi ini menggunakan OpenStreetMap yang tidak memerlukan API key

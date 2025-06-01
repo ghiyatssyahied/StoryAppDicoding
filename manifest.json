@@ -1,0 +1,95 @@
+{
+    "name": "StoryShare - Share Your Stories",
+    "short_name": "StoryShare",
+    "description": "Capture moments, share experiences, and connect with others through your unique stories",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FFFDF6",
+    "theme_color": "#A0C878",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "en",
+    "dir": "ltr",
+    "categories": ["social", "photography", "lifestyle"],
+    "icons": [
+      {
+        "src": "/images/icon-72x72.png",
+        "sizes": "72x72",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/images/icon-96x96.png",
+        "sizes": "96x96",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/images/icon-128x128.png",
+        "sizes": "128x128",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/images/icon-144x144.png",
+        "sizes": "144x144",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/images/icon-152x152.png",
+        "sizes": "152x152",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/images/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/images/icon-384x384.png",
+        "sizes": "384x384",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/images/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ],
+    "shortcuts": [
+      {
+        "name": "Add New Story",
+        "short_name": "Add Story",
+        "description": "Share a new story with photos and location",
+        "url": "/#/stories",
+        "icons": [
+          {
+            "src": "/images/add-story-icon-96x96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+          }
+        ]
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/images/screenshot-desktop-wide.png",
+        "sizes": "1280x720",
+        "type": "image/png",
+        "form_factor": "wide",
+        "label": "Desktop view of StoryShare showing story list and map"
+      },
+      {
+        "src": "/images/screenshot-mobile-narrow.png",
+        "sizes": "375x812",
+        "type": "image/png",
+        "form_factor": "narrow",
+        "label": "Mobile view of StoryShare showing story feed"
+      }
+    ]
+  }
