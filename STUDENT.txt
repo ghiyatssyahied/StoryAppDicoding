@@ -1,4 +1,4 @@
-APP_URL=http://localhost:5173
+APP_URL=https://preeminent-heliotrope-0ee544.netlify.app/
 MAP_SERVICE_API_KEY=NO_KEY_NEEDED
 
 Catatan:

@@ -103,7 +103,7 @@ class StoryPresenter {
       
       // Register service worker if not already registered
       if (!navigator.serviceWorker.controller) {
-        await navigator.serviceWorker.register('/sw.js');
+        await navigator.serviceWorker.register('/src/sw.js');
       }
       
       // Get service worker registration

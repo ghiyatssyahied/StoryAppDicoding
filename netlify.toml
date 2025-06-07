@@ -1,6 +1,6 @@
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "npm run build && mkdir -p dist/src && cp src/sw.js dist/src/sw.js && cp manifest.json dist/manifest.json && cp offline.html dist/offline.html"
 
 [[redirects]]
   from = "/*"
@@ -11,7 +11,7 @@
   NODE_VERSION = "18"
 
 [[headers]]
-  for = "/sw.js"
+  for = "/src/sw.js"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
     Service-Worker-Allowed = "/"

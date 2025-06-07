@@ -6,6 +6,9 @@ import { setupSkipToContent } from './utils/accessibility-helper';
 import PushNotificationManager from './utils/push-notification';
 import IndexedDBHelper from './utils/indexeddb-helper';
 import Auth from './utils/auth';
+// Add PWA Install Helper import
+import './utils/pwa-install';
+
 
 class AppInitializer {
   constructor() {
@@ -58,6 +61,7 @@ class AppInitializer {
         }
       }
 
+      // PWA Install Helper is auto-initialized via import
       // Show PWA install banner after a delay
       setTimeout(() => {
         this.checkPWAInstallability();
@@ -129,23 +133,29 @@ class AppInitializer {
       return;
     }
 
-    banner.style.display = 'block';
+    if (banner) {
+      banner.style.display = 'block';
 
-    enableButton.addEventListener('click', async () => {
-      const success = await PushNotificationManager.subscribe();
-      if (success) {
-        this.showNotification('Notifications enabled successfully!', 'success');
-        localStorage.setItem('notification-decision', 'enabled');
-      } else {
-        this.showNotification('Failed to enable notifications.', 'error');
+      if (enableButton) {
+        enableButton.addEventListener('click', async () => {
+          const success = await PushNotificationManager.subscribe();
+          if (success) {
+            this.showNotification('Notifications enabled successfully!', 'success');
+            localStorage.setItem('notification-decision', 'enabled');
+          } else {
+            this.showNotification('Failed to enable notifications.', 'error');
+          }
+          banner.style.display = 'none';
+        });
       }
-      banner.style.display = 'none';
-    });
 
-    dismissButton.addEventListener('click', () => {
-      banner.style.display = 'none';
-      localStorage.setItem('notification-decision', 'dismissed');
-    });
+      if (dismissButton) {
+        dismissButton.addEventListener('click', () => {
+          banner.style.display = 'none';
+          localStorage.setItem('notification-decision', 'dismissed');
+        });
+      }
+    }
   }
 
   checkPWAInstallability() {
@@ -160,27 +170,38 @@ class AppInitializer {
       return;
     }
 
-    // The install banner will be shown by the beforeinstallprompt event
-    // This is handled in the HTML file
+    // PWA Install Helper will handle the install UI automatically
+    // You can also manually trigger it if needed:
+    if (window.pwaInstallHelper && window.pwaInstallHelper.canInstall()) {
+      console.log('PWA can be installed');
+      // Optionally show your own install prompt
+    }
   }
 
   showConnectionStatus(status) {
     const statusElement = document.getElementById('connection-status');
     const textElement = document.getElementById('connection-text');
 
-    if (status === 'online') {
-      textElement.textContent = '🟢 You\'re back online!';
-      statusElement.className = 'connection-status online';
-      
-      setTimeout(() => {
-        statusElement.style.display = 'none';
-      }, 3000);
-    } else {
-      textElement.textContent = '🔴 You\'re offline. Some features may not work.';
-      statusElement.className = 'connection-status offline';
-    }
+    if (statusElement && textElement) {
+      if (status === 'online') {
+        textElement.textContent = '🟢 You\'re back online!';
+        statusElement.className = 'connection-status online';
+        
+        setTimeout(() => {
+          statusElement.style.display = 'none';
+        }, 3000);
+      } else {
+        textElement.textContent = '🔴 You\'re offline. Some features may not work.';
+        statusElement.className = 'connection-status offline';
+      }
 
-    statusElement.style.display = 'block';
+      statusElement.style.display = 'block';
+    } else {
+      // Fallback to PWA Install Helper's status indicator
+      if (window.pwaInstallHelper) {
+        window.pwaInstallHelper.updateOnlineStatus(status === 'online');
+      }
+    }
   }
 
   async syncOfflineData() {
@@ -226,13 +247,15 @@ class AppInitializer {
 
   showErrorMessage(message) {
     const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = `
-      <div class="error-container container">
-        <h1>Something went wrong</h1>
-        <p>${message}</p>
-        <button onclick="window.location.reload()" class="btn btn-primary">Reload App</button>
-      </div>
-    `;
+    if (mainContent) {
+      mainContent.innerHTML = `
+        <div class="error-container container">
+          <h1>Something went wrong</h1>
+          <p>${message}</p>
+          <button onclick="window.location.reload()" class="btn btn-primary">Reload App</button>
+        </div>
+      `;
+    }
   }
 }
 
@@ -242,22 +265,55 @@ document.addEventListener('DOMContentLoaded', async () => {
   await appInitializer.init();
 });
 
-// Handle service worker messages
+// Handle service worker messages - enhanced to work with new SW
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SYNC_COMPLETE') {
       console.log('Background sync completed:', event.data.message);
+      
+      // Show notification to user
+      const notification = document.createElement('div');
+      notification.className = 'notification notification-success';
+      notification.textContent = event.data.message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 3000);
     }
   });
 }
 
-// Handle PWA install prompt
+// Handle PWA install prompt - enhanced
 window.addEventListener('appinstalled', () => {
   console.log('PWA was installed');
   localStorage.setItem('pwa-installed', 'true');
+  
+  // Show success message
+  const notification = document.createElement('div');
+  notification.className = 'notification notification-success';
+  notification.textContent = '🎉 StoryShare installed successfully!';
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    if (document.body.contains(notification)) {
+      document.body.removeChild(notification);
+    }
+  }, 4000);
 });
 
 // Disable right-click context menu in standalone mode for better app experience
 if (window.matchMedia('(display-mode: standalone)').matches) {
   document.addEventListener('contextmenu', (e) => e.preventDefault());
+}
+
+// Debug helper for PWA status (remove in production)
+if (process.env.NODE_ENV === 'development') {
+  window.debugPWA = () => {
+    console.log('PWA Install Helper Status:', window.pwaInstallHelper?.getStatus());
+    console.log('PWA Install Helper Info:', window.pwaInstallHelper?.getAppInfo());
+    console.log('Service Worker Registration:', navigator.serviceWorker.controller);
+  };
 }

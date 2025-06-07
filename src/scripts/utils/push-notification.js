@@ -17,7 +17,7 @@ class PushNotificationManager {
   
       try {
         // Register service worker
-        this.registration = await navigator.serviceWorker.register('/sw.js');
+        this.registration = await navigator.serviceWorker.register('/src/sw.js');
         console.log('Service Worker registered successfully');
   
         // Check if already subscribed
